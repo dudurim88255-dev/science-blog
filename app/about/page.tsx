@@ -1,27 +1,27 @@
 import type { Metadata } from 'next';
-import { SITE_NAME } from '@/lib/seo';
+import { SITE_NAME, SITE_TAGLINE } from '@/lib/seo';
 
 export const metadata: Metadata = {
   title: '소개',
-  description: `${SITE_NAME}은 최신 생명과학 논문을 누구나 이해하기 쉽게 풀어 설명하는 블로그입니다.`,
+  description: `${SITE_NAME} — ${SITE_TAGLINE}. 역노화·오가노이드·CRISPR 등 최신 연구를 쉽게 소개합니다.`,
 };
 
 export default function AboutPage() {
   return (
     <div className="max-w-2xl mx-auto px-4 py-16">
       <div className="text-center mb-12">
-        <div className="text-5xl mb-4">🧬</div>
-        <h1 className="text-3xl font-bold mb-4" style={{ color: '#e8edf5' }}>소개</h1>
-        <p style={{ color: '#8b96b0' }}>오가노이드 &amp; 역노화 과학 블로그</p>
+        <div className="text-5xl mb-4">⏳</div>
+        <h1 className="text-2xl font-bold mb-2" style={{ color: '#e8edf5' }}>인간 수명 150세 가능한가?</h1>
+        <p className="font-semibold" style={{ color: '#4fd1c5' }}>{SITE_TAGLINE}</p>
       </div>
 
       <div className="space-y-8" style={{ color: '#c5d8f0', lineHeight: 1.9 }}>
         <section>
           <h2 className="text-xl font-bold mb-3" style={{ color: '#4fd1c5' }}>이 블로그는?</h2>
           <p style={{ color: '#8b96b0' }}>
-            최신 생명과학 논문 중 중요하고 흥미로운 연구를 선별하여,
-            전문 지식이 없어도 이해할 수 있도록 쉽게 풀어 설명합니다.
-            오가노이드, 역노화, CRISPR, 줄기세포, 뇌과학 분야를 중점으로 다룹니다.
+            역노화, 오가노이드, CRISPR, 줄기세포… 과학은 지금 인간의 한계를 빠르게 넘어서고 있습니다.
+            이 블로그는 150세 시대를 준비하는 사람들을 위해, 최신 생명과학 논문을 전문 지식 없이도
+            이해할 수 있도록 쉽게 풀어 설명합니다.
           </p>
         </section>
 

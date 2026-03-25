@@ -1,9 +1,10 @@
 import { Metadata } from 'next';
 import { PostMeta } from './posts';
 
-export const SITE_NAME = '오가노이드 & 역노화 과학';
+export const SITE_NAME = '인간 수명 150세 가능한가?';
+export const SITE_TAGLINE = '150세 시대의 생존전략';
 export const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://167w7k7.atoms.world';
-export const SITE_DESCRIPTION = '최신 생명과학 논문을 쉽게 풀어 설명합니다. 오가노이드, 역노화, CRISPR, 줄기세포 등 핵심 연구를 누구나 이해할 수 있도록 소개합니다.';
+export const SITE_DESCRIPTION = '인간 수명 150세, 현실이 될 수 있을까? 역노화·오가노이드·CRISPR·줄기세포 등 최신 생명과학 연구를 쉽게 풀어 드립니다. 150세 시대를 준비하는 생존전략.';
 
 export function buildPostMetadata(post: PostMeta): Metadata {
   const url = `${SITE_URL}/blog/${post.slug}`;
@@ -44,7 +45,7 @@ export function buildArticleJsonLd(post: PostMeta) {
     image,
     author: {
       '@type': 'Person',
-      name: '오가노이드 & 역노화 과학',
+      name: SITE_NAME,
       url: `${SITE_URL}/about`,
     },
     publisher: {

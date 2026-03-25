@@ -1,13 +1,13 @@
 import Link from 'next/link';
-import { SITE_NAME } from '@/lib/seo';
+import { SITE_NAME, SITE_TAGLINE } from '@/lib/seo';
 
 export function Footer() {
   return (
     <footer style={{ borderTop: '1px solid #1e2a42', background: '#070c15' }} className="mt-16 py-10">
       <div className="max-w-6xl mx-auto px-4 flex flex-col md:flex-row justify-between gap-6 text-sm" style={{ color: '#8b96b0' }}>
         <div>
-          <div className="font-bold mb-1" style={{ color: '#4fd1c5' }}>🧬 {SITE_NAME}</div>
-          <p className="max-w-xs">최신 생명과학 논문을 쉽게 풀어 설명합니다.</p>
+          <div className="font-bold mb-1" style={{ color: '#4fd1c5' }}>⏳ {SITE_NAME}</div>
+          <p className="max-w-xs" style={{ color: '#8b96b0' }}>{SITE_TAGLINE}</p>
         </div>
         <div className="flex gap-8">
           <div className="flex flex-col gap-2">

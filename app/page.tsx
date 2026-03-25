@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { getAllPosts, CATEGORY_MAP } from '@/lib/posts';
 import { PostCard } from '@/components/PostCard';
 import { AdBanner } from '@/components/AdBanner';
-import { SITE_DESCRIPTION } from '@/lib/seo';
+import { SITE_DESCRIPTION, SITE_TAGLINE } from '@/lib/seo';
 
 export default function HomePage() {
   const posts = getAllPosts();
@@ -13,10 +13,13 @@ export default function HomePage() {
     <div className="max-w-6xl mx-auto px-4 py-10">
       {/* 히어로 */}
       <section className="text-center py-12 mb-12">
-        <div className="text-5xl mb-4">🧬</div>
-        <h1 className="text-3xl md:text-4xl font-bold mb-4" style={{ color: '#e8edf5' }}>
-          오가노이드 &amp; 역노화 과학
+        <div className="text-5xl mb-4">⏳</div>
+        <h1 className="text-3xl md:text-4xl font-bold mb-2" style={{ color: '#e8edf5' }}>
+          인간 수명 150세 가능한가?
         </h1>
+        <p className="text-lg font-semibold mb-4" style={{ color: '#4fd1c5' }}>
+          {SITE_TAGLINE}
+        </p>
         <p className="text-base max-w-xl mx-auto" style={{ color: '#8b96b0', lineHeight: 1.8 }}>
           {SITE_DESCRIPTION}
         </p>

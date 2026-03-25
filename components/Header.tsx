@@ -2,6 +2,7 @@
 import Link from 'next/link';
 import { useState } from 'react';
 import { CATEGORY_MAP } from '@/lib/categories';
+import { SITE_TAGLINE } from '@/lib/seo';
 
 export function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -10,10 +11,12 @@ export function Header() {
     <header style={{ background: 'rgba(10,15,26,0.92)', borderBottom: '1px solid #1e2a42', backdropFilter: 'blur(12px)' }} className="sticky top-0 z-50">
       <div className="max-w-6xl mx-auto px-4 h-14 flex items-center justify-between">
         {/* 로고 */}
-        <Link href="/" className="flex items-center gap-2 font-bold text-lg" style={{ color: '#4fd1c5' }}>
-          <span>🧬</span>
-          <span className="hidden sm:inline">오가노이드 &amp; 역노화 과학</span>
-          <span className="sm:hidden">과학 블로그</span>
+        <Link href="/" className="flex items-center gap-2 font-bold" style={{ color: '#4fd1c5' }}>
+          <span>⏳</span>
+          <div className="flex flex-col leading-tight">
+            <span className="text-sm font-bold" style={{ color: '#4fd1c5' }}>인간 수명 150세 가능한가?</span>
+            <span className="hidden sm:block text-xs font-normal" style={{ color: '#8b96b0' }}>{SITE_TAGLINE}</span>
+          </div>
         </Link>
 
         {/* 데스크탑 네비 */}
