@@ -1,0 +1,135 @@
+#!/usr/bin/env npx tsx
+/**
+ * DOI 기반 논문 포스트 자동 생성 스크립트
+ * 사용법: npx tsx scripts/generate-post.ts <DOI> <category>
+ * 예시:   npx tsx scripts/generate-post.ts 10.1038/s41586-026-xxxxx organoid
+ *
+ * 필요한 환경변수:
+ *   ANTHROPIC_API_KEY — Claude API 키
+ */
+import fs from 'fs';
+import path from 'path';
+
+const [, , doi, category = 'organoid'] = process.argv;
+
+if (!doi) {
+  console.error('사용법: npx tsx scripts/generate-post.ts <DOI> <category>');
+  process.exit(1);
+}
+
+async function fetchPaperMeta(doi: string) {
+  const url = `https://api.crossref.org/works/${encodeURIComponent(doi)}`;
+  const res = await fetch(url, { headers: { 'User-Agent': 'science-blog/1.0' } });
+  if (!res.ok) throw new Error(`CrossRef API 오류: ${res.status}`);
+  const data = await res.json();
+  const work = data.message;
+  return {
+    title: (work.title?.[0] ?? '').replace(/\s+/g, ' ').trim(),
+    abstract: (work.abstract ?? '').replace(/<[^>]+>/g, '').trim(),
+    journal: work['container-title']?.[0] ?? '',
+    authors: (work.author ?? []).map((a: { given?: string; family?: string }) => `${a.given ?? ''} ${a.family ?? ''}`.trim()),
+    date: work.published?.['date-parts']?.[0]?.join('-') ?? new Date().toISOString().slice(0, 10),
+  };
+}
+
+async function generatePostContent(meta: { title: string; abstract: string; journal: string; doi: string; category: string }) {
+  const apiKey = process.env.ANTHROPIC_API_KEY;
+  if (!apiKey) {
+    console.warn('ANTHROPIC_API_KEY 없음 — 기본 템플릿 사용');
+    return null;
+  }
+
+  const res = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: {
+      'x-api-key': apiKey,
+      'anthropic-version': '2023-06-01',
+      'content-type': 'application/json',
+    },
+    body: JSON.stringify({
+      model: 'claude-sonnet-4-6',
+      max_tokens: 2000,
+      messages: [{
+        role: 'user',
+        content: `다음 생명과학 논문을 한국어로 블로그 포스트로 작성해줘.
+
+논문 제목: ${meta.title}
+저널: ${meta.journal}
+초록: ${meta.abstract}
+
+다음 형식으로 MDX 본문만 작성해줘 (프론트매터 제외):
+
+## 왜 중요한가?
+(2~3문단)
+
+## 연구 방법
+(간략히)
+
+## 핵심 발견
+(bullet 포함)
+
+## 우리 삶에 미치는 영향
+(2~3문장)
+
+규칙:
+- 고등학생도 이해할 수 있는 쉬운 한국어
+- 전문 용어에는 괄호로 설명 추가
+- 각 섹션 200자 이상
+- highlight-box 컴포넌트 1개 포함 (핵심 발견 강조)`,
+      }],
+    }),
+  });
+
+  if (!res.ok) { console.warn('Claude API 오류'); return null; }
+  const data = await res.json();
+  return data.content?.[0]?.text ?? null;
+}
+
+function slugify(str: string) {
+  return str
+    .toLowerCase()
+    .replace(/[^a-z0-9가-힣\s-]/g, '')
+    .replace(/\s+/g, '-')
+    .slice(0, 60);
+}
+
+async function main() {
+  console.log(`📄 논문 메타데이터 가져오는 중: ${doi}`);
+  const meta = await fetchPaperMeta(doi);
+  console.log(`✅ 제목: ${meta.title}`);
+
+  console.log('🤖 Claude로 포스트 생성 중...');
+  const content = await generatePostContent({ ...meta, doi, category });
+
+  const today = new Date().toISOString().slice(0, 10);
+  const slug = `${today}-${slugify(meta.title)}`;
+  const filename = `${slug}.mdx`;
+
+  const body = content ?? `## 왜 중요한가?\n\n${meta.abstract}\n\n## 핵심 발견\n\n(내용을 여기에 작성하세요)\n`;
+
+  const mdx = `---
+title: "${meta.title}"
+slug: "${slug}"
+date: "${today}"
+category: "${category}"
+tags: []
+summary: "${meta.abstract.slice(0, 200).replace(/"/g, "'")}"
+paperDOI: "${doi}"
+journal: "${meta.journal}"
+difficulty: "입문"
+coverImage: ""
+---
+
+${body}
+
+<div className="cite-box">
+  📄 원문: ${meta.authors.slice(0, 3).join(', ')} et al., "${meta.title}", *${meta.journal}*, ${meta.date}. DOI: ${doi}
+</div>
+`;
+
+  const outPath = path.join(process.cwd(), 'content/posts', filename);
+  fs.writeFileSync(outPath, mdx, 'utf-8');
+  console.log(`\n✅ 포스트 생성 완료: content/posts/${filename}`);
+}
+
+main().catch((e) => { console.error('오류:', e.message); process.exit(1); });
