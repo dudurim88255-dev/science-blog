@@ -7,6 +7,9 @@ import { SITE_NAME, SITE_URL, SITE_DESCRIPTION } from '@/lib/seo';
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
+  verification: {
+    google: 'de9TSsBBneQps0DJ0It1vzBsUTeGLGOoqqjAvSsx3fI',
+  },
   title: {
     default: SITE_NAME,
     template: `%s | ${SITE_NAME}`,
