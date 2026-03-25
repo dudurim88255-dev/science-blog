@@ -6,9 +6,15 @@ export const SITE_TAGLINE = '150세 시대의 생존전략';
 export const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://167w7k7.atoms.world';
 export const SITE_DESCRIPTION = '인간 수명 150세, 현실이 될 수 있을까? 역노화·오가노이드·CRISPR·줄기세포 등 최신 생명과학 연구를 쉽게 풀어 드립니다. 150세 시대를 준비하는 생존전략.';
 
+export function buildOgImageUrl(post: PostMeta): string {
+  const params = new URLSearchParams({ title: post.title, category: post.category });
+  if (post.journal) params.set('journal', post.journal);
+  return `${SITE_URL}/og?${params.toString()}`;
+}
+
 export function buildPostMetadata(post: PostMeta): Metadata {
   const url = `${SITE_URL}/blog/${post.slug}`;
-  const image = post.coverImage ? `${SITE_URL}${post.coverImage}` : `${SITE_URL}/og-default.png`;
+  const image = post.coverImage ? `${SITE_URL}${post.coverImage}` : buildOgImageUrl(post);
   return {
     title: post.title,
     description: post.summary,
@@ -36,7 +42,7 @@ export function buildPostMetadata(post: PostMeta): Metadata {
 
 export function buildArticleJsonLd(post: PostMeta) {
   const url = `${SITE_URL}/blog/${post.slug}`;
-  const image = post.coverImage ? `${SITE_URL}${post.coverImage}` : `${SITE_URL}/og-default.png`;
+  const image = post.coverImage ? `${SITE_URL}${post.coverImage}` : buildOgImageUrl(post);
   return {
     '@context': 'https://schema.org',
     '@type': 'Article',
