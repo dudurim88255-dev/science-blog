@@ -84,12 +84,12 @@ export default function HomePage() {
               { value: categories.length, label: '연구 분야', suffix: '개' },
               { value: journals.length, label: '저명 저널', suffix: '개' },
             ].map(({ value, label, suffix }) => (
-              <div key={label} className="text-center px-5 py-3 rounded-xl"
-                style={{ background: 'rgba(79,209,197,0.05)', border: '1px solid rgba(79,209,197,0.15)', minWidth: 110 }}>
-                <div className="text-2xl md:text-3xl font-bold tabular-nums" style={{ color: '#4fd1c5', fontFamily: "'JetBrains Mono', 'Courier New', monospace" }}>
+              <div key={label} className="text-center px-3 py-1.5 rounded-lg"
+                style={{ background: 'rgba(79,209,197,0.05)', border: '1px solid rgba(79,209,197,0.15)', minWidth: 56 }}>
+                <div className="font-bold tabular-nums" style={{ color: '#4fd1c5', fontFamily: "'JetBrains Mono', 'Courier New', monospace", fontSize: 15 }}>
                   {value}{suffix}
                 </div>
-                <div className="text-xs mt-1" style={{ color: '#4a6070' }}>{label}</div>
+                <div style={{ color: '#4a6070', fontSize: 10 }}>{label}</div>
               </div>
             ))}
           </div>
