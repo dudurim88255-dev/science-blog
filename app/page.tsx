@@ -43,10 +43,10 @@ export default function HomePage() {
         <div style={{ position: 'absolute', bottom: -60, right: -60, width: 350, height: 350, background: 'radial-gradient(ellipse, rgba(124,58,237,0.12) 0%, transparent 60%)', pointerEvents: 'none' }} />
         <div className="relative">
           {/* 상태 배지 */}
-          <div className="inline-flex items-center gap-2 mb-5 px-4 py-1.5 rounded-full text-xs font-bold tracking-widest uppercase"
-            style={{ background: 'rgba(79,209,197,0.08)', border: '1px solid rgba(79,209,197,0.35)', color: '#4fd1c5', letterSpacing: '0.12em' }}>
+          <div className="inline-flex items-center gap-2 mb-5 px-4 py-1.5 rounded-full text-xs font-bold"
+            style={{ background: 'rgba(79,209,197,0.08)', border: '1px solid rgba(79,209,197,0.35)', color: '#4fd1c5' }}>
             <span className="inline-block w-1.5 h-1.5 rounded-full bg-[#4fd1c5] animate-pulse" />
-            LIFE SCIENCE RESEARCH DIGEST
+            최신 생명과학 논문 해설 블로그
           </div>
 
           <h1 className="text-3xl md:text-5xl font-bold mb-4 leading-tight" style={{ color: '#e8edf5' }}>
@@ -80,16 +80,16 @@ export default function HomePage() {
           {/* 실험실 대시보드 스타일 통계 */}
           <div className="flex justify-center gap-4 flex-wrap">
             {[
-              { value: posts.length, label: 'PAPERS ANALYZED', suffix: '' },
-              { value: categories.length, label: 'RESEARCH FIELDS', suffix: '' },
-              { value: journals.length, label: 'TOP JOURNALS', suffix: '' },
+              { value: posts.length, label: '논문 해설', suffix: '편' },
+              { value: categories.length, label: '연구 분야', suffix: '개' },
+              { value: journals.length, label: '저명 저널', suffix: '개' },
             ].map(({ value, label, suffix }) => (
               <div key={label} className="text-center px-5 py-3 rounded-xl"
                 style={{ background: 'rgba(79,209,197,0.05)', border: '1px solid rgba(79,209,197,0.15)', minWidth: 110 }}>
                 <div className="text-2xl md:text-3xl font-bold tabular-nums" style={{ color: '#4fd1c5', fontFamily: "'JetBrains Mono', 'Courier New', monospace" }}>
                   {value}{suffix}
                 </div>
-                <div className="text-xs mt-1 tracking-widest" style={{ color: '#4a6070', fontSize: 10, letterSpacing: '0.1em' }}>{label}</div>
+                <div className="text-xs mt-1" style={{ color: '#4a6070' }}>{label}</div>
               </div>
             ))}
           </div>
