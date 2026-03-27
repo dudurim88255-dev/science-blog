@@ -32,13 +32,9 @@ async function fetchPaperMeta(doi: string) {
   };
 }
 
-async function generatePostContent(meta: { title: string; abstract: string; journal: string; doi: string; category: string }) {
+async function callClaude(prompt: string, model = 'claude-sonnet-4-6', maxTokens = 2000): Promise<string | null> {
   const apiKey = process.env.ANTHROPIC_API_KEY;
-  if (!apiKey) {
-    console.warn('ANTHROPIC_API_KEY 없음 — 기본 템플릿 사용');
-    return null;
-  }
-
+  if (!apiKey) return null;
   const res = await fetch('https://api.anthropic.com/v1/messages', {
     method: 'POST',
     headers: {
@@ -46,12 +42,19 @@ async function generatePostContent(meta: { title: string; abstract: string; jour
       'anthropic-version': '2023-06-01',
       'content-type': 'application/json',
     },
-    body: JSON.stringify({
-      model: 'claude-sonnet-4-6',
-      max_tokens: 2000,
-      messages: [{
-        role: 'user',
-        content: `다음 생명과학 논문을 한국어로 블로그 포스트로 작성해줘.
+    body: JSON.stringify({ model, max_tokens: maxTokens, messages: [{ role: 'user', content: prompt }] }),
+  });
+  if (!res.ok) { console.warn('Claude API 오류'); return null; }
+  const data = await res.json();
+  return data.content?.[0]?.text ?? null;
+}
+
+async function generatePostContent(meta: { title: string; abstract: string; journal: string; doi: string; category: string }) {
+  if (!process.env.ANTHROPIC_API_KEY) {
+    console.warn('ANTHROPIC_API_KEY 없음 — 기본 템플릿 사용');
+    return null;
+  }
+  return callClaude(`다음 생명과학 논문을 한국어로 블로그 포스트로 작성해줘.
 
 논문 제목: ${meta.title}
 저널: ${meta.journal}
@@ -75,14 +78,24 @@ async function generatePostContent(meta: { title: string; abstract: string; jour
 - 고등학생도 이해할 수 있는 쉬운 한국어
 - 전문 용어에는 괄호로 설명 추가
 - 각 섹션 200자 이상
-- highlight-box 컴포넌트 1개 포함 (핵심 발견 강조)`,
-      }],
-    }),
-  });
+- highlight-box 컴포넌트 1개 포함 (핵심 발견 강조)`);
+}
 
-  if (!res.ok) { console.warn('Claude API 오류'); return null; }
-  const data = await res.json();
-  return data.content?.[0]?.text ?? null;
+async function generateEasyBody(title: string, content: string): Promise<string | null> {
+  return callClaude(`아래 생명과학 논문 해설을 '쉬운 버전'으로 다시 써줘.
+
+조건:
+- AI 느낌 전혀 없이, 친한 친구가 설명해주는 것처럼 자연스럽게
+- "~입니다" 대신 "~거예요", "~이에요", "~죠" 같은 친근한 말투
+- 어려운 용어는 일상적인 비유로 설명
+- 독자한테 말 거는 듯한 자연스러운 흐름
+- 섹션 구조 유지, 제목도 쉽고 재밌게 변경
+- 마크다운 형식 유지
+
+논문 제목: ${title}
+
+원본 내용:
+${content.slice(0, 3000)}`, 'claude-haiku-4-5-20251001', 1500);
 }
 
 function slugify(str: string) {
@@ -107,6 +120,10 @@ async function main() {
 
   const body = content ?? `## 왜 중요한가?\n\n${meta.abstract}\n\n## 핵심 발견\n\n(내용을 여기에 작성하세요)\n`;
 
+  console.log('😊 쉬운 버전 생성 중...');
+  const easy = await generateEasyBody(meta.title, body);
+  const easyLine = easy ? `easyBody: |\n${easy.split('\n').map((l) => '  ' + l).join('\n')}\n` : '';
+
   const mdx = `---
 title: "${meta.title}"
 slug: "${slug}"
@@ -118,7 +135,7 @@ paperDOI: "${doi}"
 journal: "${meta.journal}"
 difficulty: "입문"
 coverImage: ""
----
+${easyLine}---
 
 ${body}
 

@@ -9,6 +9,7 @@ import { TableOfContents } from '@/components/TableOfContents';
 import { AdBanner } from '@/components/AdBanner';
 import { ShareButtons } from '@/components/ShareButtons';
 import { ReadingProgress } from '@/components/ReadingProgress';
+import { ContentToggle } from '@/components/ContentToggle';
 import Link from 'next/link';
 
 interface Props {
@@ -106,10 +107,21 @@ export default async function BlogPostPage({ params }: Props) {
 
             <AdBanner slot="2345678901" className="mb-8" />
 
-            {/* MDX 본문 */}
-            <div className="prose">
-              <MDXRemote source={post.content} />
-            </div>
+            {/* MDX 본문 (전문가/쉬운 버전 토글) */}
+            <ContentToggle
+              expertContent={
+                <div className="prose">
+                  <MDXRemote source={post.content} />
+                </div>
+              }
+              easyContent={
+                post.easyBody ? (
+                  <div className="prose">
+                    <MDXRemote source={post.easyBody} />
+                  </div>
+                ) : null
+              }
+            />
 
             <AdBanner slot="3456789012" className="mt-10" />
 

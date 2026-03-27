@@ -23,6 +23,7 @@ export interface PostMeta {
 
 export interface Post extends PostMeta {
   content: string;
+  easyBody?: string;
 }
 
 export function getAllPosts(): PostMeta[] {
@@ -69,6 +70,7 @@ export function getPostBySlug(slug: string): Post | null {
     readingTime: readingTime(content).text,
     updatedAt: data.updatedAt,
     content,
+    easyBody: data.easyBody ?? null,
   };
 }
 
