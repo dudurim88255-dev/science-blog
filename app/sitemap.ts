@@ -1,5 +1,5 @@
 import type { MetadataRoute } from 'next';
-import { getAllPosts, CATEGORY_MAP } from '@/lib/posts';
+import { getAllPosts, CATEGORY_MAP, getAllTags } from '@/lib/posts';
 import { SITE_URL } from '@/lib/seo';
 
 export default function sitemap(): MetadataRoute.Sitemap {
@@ -27,5 +27,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.9,
   }));
 
-  return [...staticRoutes, ...categoryRoutes, ...postRoutes];
+  const tagRoutes: MetadataRoute.Sitemap = getAllTags().map((tag) => ({
+    url: `${SITE_URL}/tag/${encodeURIComponent(tag)}`,
+    lastModified: now,
+    changeFrequency: 'weekly',
+    priority: 0.6,
+  }));
+
+  return [...staticRoutes, ...categoryRoutes, ...tagRoutes, ...postRoutes];
 }

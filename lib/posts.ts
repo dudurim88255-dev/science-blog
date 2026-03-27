@@ -87,6 +87,16 @@ export function getAllCategories(): string[] {
   return [...new Set(posts.map((p) => p.category))];
 }
 
+export function getAllTags(): string[] {
+  const posts = getAllPosts();
+  const tags = posts.flatMap((p) => p.tags);
+  return [...new Set(tags)].filter(Boolean).sort();
+}
+
+export function getPostsByTag(tag: string): PostMeta[] {
+  return getAllPosts().filter((p) => p.tags.includes(tag));
+}
+
 export function getRelatedPosts(slug: string, limit = 3): PostMeta[] {
   const all = getAllPosts();
   const current = all.find((p) => p.slug === slug);

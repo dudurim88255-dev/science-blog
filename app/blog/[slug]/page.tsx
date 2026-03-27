@@ -129,9 +129,11 @@ export default async function BlogPostPage({ params }: Props) {
             {post.tags.length > 0 && (
               <div className="mt-8 flex flex-wrap gap-2">
                 {post.tags.map((tag) => (
-                  <span key={tag} style={{ background: '#131a2e', border: '1px solid #1e2a42', borderRadius: 6, padding: '4px 10px', fontSize: 12, color: '#8b96b0' }}>
+                  <Link key={tag} href={`/tag/${encodeURIComponent(tag)}`}
+                    style={{ background: '#131a2e', border: '1px solid #1e2a42', borderRadius: 6, padding: '4px 10px', fontSize: 12, color: '#8b96b0' }}
+                    className="hover:border-[#4fd1c5] hover:text-[#4fd1c5] transition-colors">
                     #{tag}
-                  </span>
+                  </Link>
                 ))}
               </div>
             )}
