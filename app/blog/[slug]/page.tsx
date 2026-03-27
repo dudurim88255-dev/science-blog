@@ -7,6 +7,8 @@ import { buildPostMetadata, buildArticleJsonLd, buildBreadcrumbJsonLd, SITE_URL,
 import { PaperMetadata } from '@/components/PaperMetadata';
 import { TableOfContents } from '@/components/TableOfContents';
 import { AdBanner } from '@/components/AdBanner';
+import { ShareButtons } from '@/components/ShareButtons';
+import { ReadingProgress } from '@/components/ReadingProgress';
 import Link from 'next/link';
 
 interface Props {
@@ -44,8 +46,11 @@ export default async function BlogPostPage({ params }: Props) {
     { name: post.title, url: `${SITE_URL}/blog/${post.slug}` },
   ]);
 
+  const postUrl = `${SITE_URL}/blog/${post.slug}`;
+
   return (
     <>
+      <ReadingProgress />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }} />
 
@@ -118,6 +123,9 @@ export default async function BlogPostPage({ params }: Props) {
                 ))}
               </div>
             )}
+
+            {/* 공유 버튼 */}
+            <ShareButtons title={post.title} url={postUrl} />
           </article>
 
           {/* 사이드바 목차 */}
