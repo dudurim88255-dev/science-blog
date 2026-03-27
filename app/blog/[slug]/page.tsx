@@ -1,7 +1,8 @@
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
 import { MDXRemote } from 'next-mdx-remote/rsc';
-import { getAllPosts, getPostBySlug } from '@/lib/posts';
+import { getAllPosts, getPostBySlug, getRelatedPosts } from '@/lib/posts';
+import { PostCard } from '@/components/PostCard';
 import { buildPostMetadata, buildArticleJsonLd, buildBreadcrumbJsonLd, SITE_URL, SITE_NAME } from '@/lib/seo';
 import { PaperMetadata } from '@/components/PaperMetadata';
 import { TableOfContents } from '@/components/TableOfContents';
@@ -35,6 +36,7 @@ export default async function BlogPostPage({ params }: Props) {
   if (!post) notFound();
 
   const diff = DIFFICULTY_CONFIG[post.difficulty] ?? DIFFICULTY_CONFIG['입문'];
+  const relatedPosts = getRelatedPosts(post.slug);
   const articleJsonLd = buildArticleJsonLd(post);
   const breadcrumbJsonLd = buildBreadcrumbJsonLd([
     { name: SITE_NAME, url: SITE_URL },
@@ -123,6 +125,20 @@ export default async function BlogPostPage({ params }: Props) {
             <TableOfContents />
           </aside>
         </div>
+
+        {/* 관련 포스트 */}
+        {relatedPosts.length > 0 && (
+          <section className="mt-16 pt-10" style={{ borderTop: '1px solid #1e2a42' }}>
+            <h2 className="text-lg font-bold mb-6 flex items-center gap-2" style={{ color: '#4fd1c5' }}>
+              <span>📚</span> 관련 논문
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {relatedPosts.map((p) => (
+                <PostCard key={p.slug} post={p} />
+              ))}
+            </div>
+          </section>
+        )}
       </div>
     </>
   );

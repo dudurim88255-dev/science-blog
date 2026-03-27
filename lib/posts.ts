@@ -81,3 +81,23 @@ export function getAllCategories(): string[] {
   return [...new Set(posts.map((p) => p.category))];
 }
 
+export function getRelatedPosts(slug: string, limit = 3): PostMeta[] {
+  const all = getAllPosts();
+  const current = all.find((p) => p.slug === slug);
+  if (!current) return [];
+
+  // 같은 카테고리 우선, 태그 겹치면 가중치
+  const scored = all
+    .filter((p) => p.slug !== slug)
+    .map((p) => {
+      let score = 0;
+      if (p.category === current.category) score += 3;
+      const sharedTags = p.tags.filter((t) => current.tags.includes(t)).length;
+      score += sharedTags;
+      return { post: p, score };
+    })
+    .sort((a, b) => b.score - a.score);
+
+  return scored.slice(0, limit).map((s) => s.post);
+}
+
