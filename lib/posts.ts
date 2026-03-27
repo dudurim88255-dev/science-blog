@@ -5,6 +5,7 @@ import readingTime from 'reading-time';
 export { CATEGORY_MAP } from './categories';
 
 const POSTS_DIR = path.join(process.cwd(), 'content/posts');
+const EASY_DIR = path.join(process.cwd(), 'content/easy');
 
 export interface PostMeta {
   slug: string;
@@ -70,7 +71,10 @@ export function getPostBySlug(slug: string): Post | null {
     readingTime: readingTime(content).text,
     updatedAt: data.updatedAt,
     content,
-    easyBody: data.easyBody ?? null,
+    easyBody: (() => {
+      const easyPath = path.join(EASY_DIR, `${slug}.md`);
+      return fs.existsSync(easyPath) ? fs.readFileSync(easyPath, 'utf-8') : undefined;
+    })(),
   };
 }
 

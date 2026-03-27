@@ -91,11 +91,12 @@ async function generateEasyBody(title: string, content: string): Promise<string 
 - 독자한테 말 거는 듯한 자연스러운 흐름
 - 섹션 구조 유지, 제목도 쉽고 재밌게 변경
 - 마크다운 형식 유지
+- **중요: HTML이나 JSX 태그 절대 사용 금지. 순수 마크다운만 사용.**
 
 논문 제목: ${title}
 
 원본 내용:
-${content.slice(0, 3000)}`, 'claude-haiku-4-5-20251001', 1500);
+${content.slice(0, 3000)}`, 'claude-haiku-4-5-20251001', 2000);
 }
 
 function slugify(str: string) {
@@ -120,10 +121,6 @@ async function main() {
 
   const body = content ?? `## 왜 중요한가?\n\n${meta.abstract}\n\n## 핵심 발견\n\n(내용을 여기에 작성하세요)\n`;
 
-  console.log('😊 쉬운 버전 생성 중...');
-  const easy = await generateEasyBody(meta.title, body);
-  const easyLine = easy ? `easyBody: |\n${easy.split('\n').map((l) => '  ' + l).join('\n')}\n` : '';
-
   const mdx = `---
 title: "${meta.title}"
 slug: "${slug}"
@@ -135,7 +132,7 @@ paperDOI: "${doi}"
 journal: "${meta.journal}"
 difficulty: "입문"
 coverImage: ""
-${easyLine}---
+---
 
 ${body}
 
@@ -147,6 +144,15 @@ ${body}
   const outPath = path.join(process.cwd(), 'content/posts', filename);
   fs.writeFileSync(outPath, mdx, 'utf-8');
   console.log(`\n✅ 포스트 생성 완료: content/posts/${filename}`);
+
+  console.log('😊 쉬운 버전 생성 중...');
+  const easy = await generateEasyBody(meta.title, body);
+  if (easy) {
+    const easyDir = path.join(process.cwd(), 'content/easy');
+    if (!fs.existsSync(easyDir)) fs.mkdirSync(easyDir, { recursive: true });
+    fs.writeFileSync(path.join(easyDir, `${slug}.md`), easy, 'utf-8');
+    console.log(`✅ 쉬운 버전 생성 완료: content/easy/${slug}.md`);
+  }
 }
 
 main().catch((e) => { console.error('오류:', e.message); process.exit(1); });

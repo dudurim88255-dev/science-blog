@@ -6,13 +6,18 @@
  *
  * 필요한 환경변수:
  *   ANTHROPIC_API_KEY — Claude API 키
+ *
+ * 출력: content/easy/[slug].md
  */
 import fs from 'fs';
 import path from 'path';
 import matter from 'gray-matter';
 
 const POSTS_DIR = path.join(process.cwd(), 'content/posts');
+const EASY_DIR = path.join(process.cwd(), 'content/easy');
 const [, , targetSlug] = process.argv;
+
+if (!fs.existsSync(EASY_DIR)) fs.mkdirSync(EASY_DIR, { recursive: true });
 
 async function generateEasyBody(title: string, content: string): Promise<string | null> {
   const apiKey = process.env.ANTHROPIC_API_KEY;
@@ -30,7 +35,7 @@ async function generateEasyBody(title: string, content: string): Promise<string 
     },
     body: JSON.stringify({
       model: 'claude-haiku-4-5-20251001',
-      max_tokens: 1500,
+      max_tokens: 2000,
       messages: [{
         role: 'user',
         content: `아래 생명과학 논문 해설을 '쉬운 버전'으로 다시 써줘.
@@ -42,6 +47,7 @@ async function generateEasyBody(title: string, content: string): Promise<string 
 - 독자한테 말 거는 듯한 자연스러운 흐름 ("궁금하죠?", "신기하지 않아요?" 같은 표현 OK)
 - 섹션 구조는 유지하되 제목도 쉽고 재밌게 변경
 - 마크다운 형식 유지 (##, **, - 등)
+- **중요: HTML이나 JSX 태그(<div>, <span> 등) 절대 사용 금지. 순수 마크다운만 사용.**
 - 분량: 원본의 70~80% 수준
 
 논문 제목: ${title}
@@ -60,34 +66,25 @@ ${content.slice(0, 3000)}`,
   return data.content?.[0]?.text ?? null;
 }
 
-function addEasyBodyToMdx(filePath: string, easyBody: string) {
-  const raw = fs.readFileSync(filePath, 'utf-8');
-  const parsed = matter(raw);
-
-  // 이미 있으면 덮어쓰기
-  parsed.data.easyBody = easyBody;
-
-  // gray-matter stringify: 프론트매터 재구성
-  const newRaw = matter.stringify(parsed.content, parsed.data);
-  fs.writeFileSync(filePath, newRaw, 'utf-8');
-}
-
 async function processFile(file: string) {
+  const slug = file.replace(/\.mdx$/, '');
+  const easyPath = path.join(EASY_DIR, `${slug}.md`);
+
+  if (fs.existsSync(easyPath)) {
+    console.log(`  ⏭️  건너뜀 (이미 있음): ${slug}`);
+    return;
+  }
+
   const filePath = path.join(POSTS_DIR, file);
   const raw = fs.readFileSync(filePath, 'utf-8');
   const { data, content } = matter(raw);
 
-  if (data.easyBody) {
-    console.log(`  ⏭️  건너뜀 (이미 있음): ${file}`);
-    return;
-  }
-
-  console.log(`  🤖 생성 중: ${file}`);
+  console.log(`  🤖 생성 중: ${slug}`);
   const easyBody = await generateEasyBody(data.title ?? '', content);
   if (!easyBody) return;
 
-  addEasyBodyToMdx(filePath, easyBody);
-  console.log(`  ✅ 완료: ${file}`);
+  fs.writeFileSync(easyPath, easyBody, 'utf-8');
+  console.log(`  ✅ 완료: ${slug}.md`);
 }
 
 async function main() {
@@ -98,8 +95,7 @@ async function main() {
 
   if (targetSlug) {
     const file = `${targetSlug}.mdx`;
-    const filePath = path.join(POSTS_DIR, file);
-    if (!fs.existsSync(filePath)) {
+    if (!fs.existsSync(path.join(POSTS_DIR, file))) {
       console.error(`파일 없음: ${file}`);
       process.exit(1);
     }
