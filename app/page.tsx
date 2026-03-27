@@ -41,11 +41,6 @@ export default function HomePage() {
         <div style={{ position: 'absolute', top: -80, left: -80, width: 400, height: 400, background: 'radial-gradient(ellipse, rgba(79,209,197,0.1) 0%, transparent 60%)', pointerEvents: 'none' }} />
         {/* 배경: 우하단 퍼플 글로우 */}
         <div style={{ position: 'absolute', bottom: -60, right: -60, width: 350, height: 350, background: 'radial-gradient(ellipse, rgba(124,58,237,0.12) 0%, transparent 60%)', pointerEvents: 'none' }} />
-        {/* DNA 이중나선 심볼 — 우측 */}
-        <div style={{ position: 'absolute', right: 32, top: '50%', transform: 'translateY(-50%)', opacity: 0.07, fontSize: 120, lineHeight: 1, pointerEvents: 'none', userSelect: 'none' }}>🧬</div>
-        {/* 분자 심볼 — 좌측 */}
-        <div style={{ position: 'absolute', left: 32, top: '50%', transform: 'translateY(-50%)', opacity: 0.07, fontSize: 100, lineHeight: 1, pointerEvents: 'none', userSelect: 'none' }}>⚛️</div>
-
         <div className="relative">
           {/* 상태 배지 */}
           <div className="inline-flex items-center gap-2 mb-5 px-4 py-1.5 rounded-full text-xs font-bold tracking-widest uppercase"
