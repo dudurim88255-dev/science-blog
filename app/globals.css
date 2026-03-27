@@ -1,20 +1,51 @@
 @import "tailwindcss";
 
 :root {
-  --bg: #0a0f1a;
-  --bg-card: #131a2e;
+  --bg: #020b18;
+  --bg-card: #0d1424;
+  --bg-card2: #091020;
   --text: #e8edf5;
   --text-muted: #8b96b0;
   --accent: #4fd1c5;
   --accent2: #7c3aed;
-  --border: #1e2a42;
+  --border: #1a2540;
 }
 
 body {
-  background: var(--bg);
+  background-color: #020b18;
+  background-image:
+    radial-gradient(circle, rgba(79, 209, 197, 0.035) 1px, transparent 1px),
+    linear-gradient(180deg, #020b18 0%, #031018 30%, #02101c 60%, #020a14 100%);
+  background-size: 32px 32px, 100% 100%;
+  background-attachment: fixed;
   color: var(--text);
-  font-family: 'Pretendard Variable', 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  font-family: 'Noto Sans KR', 'Pretendard Variable', 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
   line-height: 1.8;
+}
+
+/* 상단 글로우 — 페이지 최상단 청록 빛번짐 */
+body::before {
+  content: '';
+  position: fixed;
+  top: -200px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 900px;
+  height: 600px;
+  background: radial-gradient(ellipse at center, rgba(79, 209, 197, 0.06) 0%, transparent 65%);
+  pointer-events: none;
+  z-index: 0;
+  animation: pulse-glow 6s ease-in-out infinite;
+}
+
+@keyframes pulse-glow {
+  0%, 100% { opacity: 0.6; transform: translateX(-50%) scale(1); }
+  50%       { opacity: 1;   transform: translateX(-50%) scale(1.05); }
+}
+
+@keyframes shimmer {
+  0%   { background-position: -200% center; }
+  100% { background-position:  200% center; }
 }
 
 /* 스크롤바 */
@@ -34,23 +65,30 @@ body {
 .prose a:hover { color: #81e6d9; }
 .prose ul, .prose ol { padding-left: 1.5em; margin-bottom: 1.2em; }
 .prose li { margin-bottom: 0.4em; }
-.prose code { background: #1e2a42; padding: 2px 6px; border-radius: 4px; font-size: 0.875em; font-family: 'JetBrains Mono', monospace; color: var(--accent); }
-.prose pre { background: #0d1424; border: 1px solid var(--border); border-radius: 8px; padding: 1rem; overflow-x: auto; margin-bottom: 1.5em; }
+.prose code { background: #1a2540; padding: 2px 6px; border-radius: 4px; font-size: 0.875em; font-family: 'JetBrains Mono', monospace; color: var(--accent); }
+.prose pre { background: #040d1a; border: 1px solid var(--border); border-radius: 8px; padding: 1rem; overflow-x: auto; margin-bottom: 1.5em; }
 .prose pre code { background: none; padding: 0; }
 .prose blockquote { border-left: 3px solid var(--accent); padding-left: 1.2em; color: var(--text-muted); font-style: italic; margin: 1.5em 0; }
 .prose strong { color: #fff; font-weight: 700; }
 .prose hr { border-color: var(--border); margin: 2em 0; }
+.prose table { width: 100%; border-collapse: collapse; margin-bottom: 1.5em; font-size: 0.9rem; }
+.prose th { background: #0d1424; color: var(--accent); padding: 8px 12px; text-align: left; border: 1px solid var(--border); }
+.prose td { padding: 8px 12px; border: 1px solid var(--border); color: var(--text-muted); }
+.prose tr:hover td { background: rgba(79,209,197,0.03); }
 
 /* 하이라이트 박스 */
 .highlight-box {
-  background: linear-gradient(135deg, rgba(79, 209, 197, 0.08), rgba(124, 58, 237, 0.08));
-  border: 1px solid rgba(79, 209, 197, 0.3);
+  background: linear-gradient(135deg, rgba(79, 209, 197, 0.07), rgba(124, 58, 237, 0.07));
+  border: 1px solid rgba(79, 209, 197, 0.25);
   border-radius: 12px;
   padding: 1.25rem 1.5rem;
   margin: 1.5rem 0;
+  backdrop-filter: blur(4px);
 }
+
+/* 출처 박스 */
 .cite-box {
-  background: #0d1424;
+  background: rgba(9, 16, 32, 0.8);
   border: 1px solid var(--border);
   border-left: 3px solid var(--accent2);
   border-radius: 8px;
@@ -58,4 +96,13 @@ body {
   margin: 1.5rem 0;
   font-size: 0.9rem;
   color: var(--text-muted);
+  backdrop-filter: blur(4px);
+}
+
+/* 글래스 카드 공통 */
+.glass-card {
+  background: rgba(13, 20, 36, 0.7);
+  border: 1px solid rgba(26, 37, 64, 0.8);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
 }

@@ -27,8 +27,8 @@ export function PostCard({ post }: Props) {
   return (
     <Link href={`/blog/${post.slug}`} className="block group">
       <article
-        style={{ background: '#131a2e', border: '1px solid #1e2a42', borderRadius: 16, transition: 'border-color 0.2s, transform 0.2s' }}
-        className="h-full overflow-hidden hover:border-[#4fd1c5] group-hover:-translate-y-1"
+        style={{ borderRadius: 16, transition: 'border-color 0.2s, transform 0.2s' }}
+        className="glass-card h-full overflow-hidden hover:border-[#4fd1c5] group-hover:-translate-y-1"
       >
         {post.coverImage && (
           <div className="w-full h-44 overflow-hidden">
