@@ -14,28 +14,44 @@
 body {
   background-color: #020b18;
   background-image:
-    radial-gradient(circle, rgba(79, 209, 197, 0.08) 1px, transparent 1px),
-    linear-gradient(180deg, #020b18 0%, #041220 30%, #030e1c 60%, #020a14 100%);
-  background-size: 28px 28px, 100% 100%;
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='100'%3E%3Cpolygon points='28,2 54,17 54,47 28,62 2,47 2,17' fill='none' stroke='rgba(79,209,197,0.09)' stroke-width='0.8'/%3E%3Cpolygon points='28,52 54,67 54,97 28,112 2,97 2,67' fill='none' stroke='rgba(79,209,197,0.09)' stroke-width='0.8'/%3E%3C/svg%3E"),
+    linear-gradient(180deg, #020b18 0%, #040f1e 40%, #030c18 100%);
+  background-size: 56px 100px, 100% 100%;
   background-attachment: fixed;
   color: var(--text);
   font-family: 'Noto Sans KR', 'Pretendard Variable', 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
   line-height: 1.8;
 }
 
-/* 상단 글로우 — 페이지 최상단 청록 빛번짐 */
+/* 상단 글로우 — 청록 빛번짐 */
 body::before {
   content: '';
   position: fixed;
-  top: -120px;
+  top: -150px;
   left: 50%;
   transform: translateX(-50%);
-  width: 1000px;
-  height: 700px;
-  background: radial-gradient(ellipse at center, rgba(79, 209, 197, 0.15) 0%, rgba(79, 209, 197, 0.04) 40%, transparent 70%);
+  width: 1100px;
+  height: 750px;
+  background: radial-gradient(ellipse at center,
+    rgba(79, 209, 197, 0.18) 0%,
+    rgba(79, 209, 197, 0.06) 35%,
+    transparent 65%);
   pointer-events: none;
   z-index: 0;
   animation: pulse-glow 6s ease-in-out infinite;
+}
+
+/* 하단 퍼플 글로우 */
+body::after {
+  content: '';
+  position: fixed;
+  bottom: -200px;
+  right: -100px;
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(ellipse at center, rgba(124, 58, 237, 0.1) 0%, transparent 60%);
+  pointer-events: none;
+  z-index: 0;
 }
 
 @keyframes pulse-glow {

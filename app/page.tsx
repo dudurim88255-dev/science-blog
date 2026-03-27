@@ -34,59 +34,67 @@ export default function HomePage() {
     <div className="max-w-6xl mx-auto px-4 py-10">
 
       {/* ── 히어로 ── */}
-      <section className="relative text-center py-16 mb-4 overflow-hidden rounded-3xl"
-        style={{ background: 'linear-gradient(135deg, #0d1424 0%, #111827 50%, #0d1424 100%)', border: '1px solid #1e2a42' }}>
-        {/* 배경 글로우 */}
-        <div style={{ position: 'absolute', top: '-60px', left: '50%', transform: 'translateX(-50%)', width: 500, height: 300, background: 'radial-gradient(ellipse, rgba(79,209,197,0.07) 0%, transparent 70%)', pointerEvents: 'none' }} />
+      <section className="relative text-center py-20 mb-4 overflow-hidden rounded-3xl"
+        style={{ background: 'linear-gradient(160deg, #050e1f 0%, #091525 50%, #060c1a 100%)', border: '1px solid rgba(79,209,197,0.15)' }}>
+
+        {/* 배경: 좌상단 청록 글로우 */}
+        <div style={{ position: 'absolute', top: -80, left: -80, width: 400, height: 400, background: 'radial-gradient(ellipse, rgba(79,209,197,0.1) 0%, transparent 60%)', pointerEvents: 'none' }} />
+        {/* 배경: 우하단 퍼플 글로우 */}
+        <div style={{ position: 'absolute', bottom: -60, right: -60, width: 350, height: 350, background: 'radial-gradient(ellipse, rgba(124,58,237,0.12) 0%, transparent 60%)', pointerEvents: 'none' }} />
+        {/* DNA 이중나선 심볼 — 우측 */}
+        <div style={{ position: 'absolute', right: 32, top: '50%', transform: 'translateY(-50%)', opacity: 0.07, fontSize: 120, lineHeight: 1, pointerEvents: 'none', userSelect: 'none' }}>🧬</div>
+        {/* 분자 심볼 — 좌측 */}
+        <div style={{ position: 'absolute', left: 32, top: '50%', transform: 'translateY(-50%)', opacity: 0.07, fontSize: 100, lineHeight: 1, pointerEvents: 'none', userSelect: 'none' }}>⚛️</div>
 
         <div className="relative">
-          {/* 배지 */}
-          <div className="inline-flex items-center gap-2 mb-6 px-4 py-1.5 rounded-full text-xs font-semibold"
-            style={{ background: 'rgba(79,209,197,0.1)', border: '1px solid rgba(79,209,197,0.3)', color: '#4fd1c5' }}>
+          {/* 상태 배지 */}
+          <div className="inline-flex items-center gap-2 mb-5 px-4 py-1.5 rounded-full text-xs font-bold tracking-widest uppercase"
+            style={{ background: 'rgba(79,209,197,0.08)', border: '1px solid rgba(79,209,197,0.35)', color: '#4fd1c5', letterSpacing: '0.12em' }}>
             <span className="inline-block w-1.5 h-1.5 rounded-full bg-[#4fd1c5] animate-pulse" />
-            최신 생명과학 논문 해설 블로그
+            LIFE SCIENCE RESEARCH DIGEST
           </div>
 
-          <h1 className="text-3xl md:text-5xl font-bold mb-3 leading-tight" style={{ color: '#e8edf5' }}>
+          <h1 className="text-3xl md:text-5xl font-bold mb-4 leading-tight" style={{ color: '#e8edf5' }}>
             인간 수명{' '}
             <span style={{ background: 'linear-gradient(90deg, #4fd1c5, #7c3aed)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
               150세
             </span>
             {' '}가능한가?
           </h1>
-          <p className="text-base md:text-lg font-semibold mb-4" style={{ color: '#4fd1c5' }}>
+          <p className="text-base md:text-lg font-semibold mb-3" style={{ color: '#4fd1c5' }}>
             {SITE_TAGLINE}
           </p>
-          <p className="text-sm md:text-base max-w-xl mx-auto mb-10" style={{ color: '#8b96b0', lineHeight: 1.9 }}>
+          <p className="text-sm md:text-base max-w-xl mx-auto mb-8" style={{ color: '#8b96b0', lineHeight: 1.9 }}>
             {SITE_DESCRIPTION}
           </p>
 
           {/* CTA 버튼 */}
           <div className="flex flex-wrap justify-center gap-3 mb-10">
             <Link href="/blog"
-              style={{ background: 'linear-gradient(135deg, #4fd1c5, #38b2ac)', borderRadius: 12, padding: '10px 28px', color: '#0d1424', fontWeight: 700, fontSize: 14 }}
+              style={{ background: 'linear-gradient(135deg, #4fd1c5, #38b2ac)', borderRadius: 10, padding: '10px 28px', color: '#020b18', fontWeight: 700, fontSize: 14, letterSpacing: '0.02em' }}
               className="hover:opacity-90 transition-opacity">
-              전체 논문 보기
+              📄 전체 논문 보기
             </Link>
             <Link href="/category/anti-aging"
-              style={{ background: 'transparent', border: '1px solid rgba(79,209,197,0.4)', borderRadius: 12, padding: '10px 28px', color: '#4fd1c5', fontWeight: 600, fontSize: 14 }}
-              className="hover:border-[#4fd1c5] hover:bg-[rgba(79,209,197,0.05)] transition-all">
-              역노화 연구 →
+              style={{ background: 'rgba(79,209,197,0.06)', border: '1px solid rgba(79,209,197,0.35)', borderRadius: 10, padding: '10px 28px', color: '#4fd1c5', fontWeight: 600, fontSize: 14 }}
+              className="hover:bg-[rgba(79,209,197,0.12)] transition-all">
+              ⏳ 역노화 연구 →
             </Link>
           </div>
 
-          {/* 통계 */}
-          <div className="flex justify-center gap-8 flex-wrap">
+          {/* 실험실 대시보드 스타일 통계 */}
+          <div className="flex justify-center gap-4 flex-wrap">
             {[
-              { value: posts.length, label: '논문 해설', suffix: '편' },
-              { value: categories.length, label: '연구 분야', suffix: '개' },
-              { value: journals.length, label: '저명 저널', suffix: '개' },
+              { value: posts.length, label: 'PAPERS ANALYZED', suffix: '' },
+              { value: categories.length, label: 'RESEARCH FIELDS', suffix: '' },
+              { value: journals.length, label: 'TOP JOURNALS', suffix: '' },
             ].map(({ value, label, suffix }) => (
-              <div key={label} className="text-center">
-                <div className="text-2xl md:text-3xl font-bold" style={{ color: '#4fd1c5' }}>
-                  {value}<span className="text-base ml-0.5" style={{ color: '#4fd1c5' }}>{suffix}</span>
+              <div key={label} className="text-center px-5 py-3 rounded-xl"
+                style={{ background: 'rgba(79,209,197,0.05)', border: '1px solid rgba(79,209,197,0.15)', minWidth: 110 }}>
+                <div className="text-2xl md:text-3xl font-bold tabular-nums" style={{ color: '#4fd1c5', fontFamily: "'JetBrains Mono', 'Courier New', monospace" }}>
+                  {value}{suffix}
                 </div>
-                <div className="text-xs mt-1" style={{ color: '#4a5568' }}>{label}</div>
+                <div className="text-xs mt-1 tracking-widest" style={{ color: '#4a6070', fontSize: 10, letterSpacing: '0.1em' }}>{label}</div>
               </div>
             ))}
           </div>
@@ -106,11 +114,11 @@ export default function HomePage() {
             const emoji = CATEGORY_EMOJI[slug] ?? '📄';
             return (
               <Link key={slug} href={`/category/${slug}`}
-                style={{ background: '#131a2e', border: '1px solid #1e2a42', borderRadius: 16, padding: '20px', transition: 'all 0.2s', display: 'block' }}
-                className="hover:border-[#4fd1c5] hover:-translate-y-0.5 group">
-                <div className="text-2xl mb-2">{emoji}</div>
+                style={{ background: 'linear-gradient(135deg, rgba(13,20,36,0.9) 0%, rgba(9,16,32,0.95) 100%)', border: '1px solid rgba(79,209,197,0.15)', borderRadius: 16, padding: '20px', transition: 'all 0.25s', display: 'block' }}
+                className="hover:border-[#4fd1c5] hover:-translate-y-1 hover:shadow-[0_0_20px_rgba(79,209,197,0.15)] group">
+                <div className="text-2xl mb-3">{emoji}</div>
                 <div className="font-bold text-sm mb-1 group-hover:text-[#4fd1c5] transition-colors" style={{ color: '#e8edf5' }}>{name}</div>
-                <div className="text-xs mb-3 line-clamp-2" style={{ color: '#4a5568' }}>{description}</div>
+                <div className="text-xs mb-3 line-clamp-2" style={{ color: '#4a6070' }}>{description}</div>
                 <div className="text-xs font-semibold" style={{ color: '#4fd1c5' }}>{count}편 →</div>
               </Link>
             );
