@@ -49,6 +49,20 @@ async function callClaude(prompt: string, model = 'claude-sonnet-4-6', maxTokens
   return data.content?.[0]?.text ?? null;
 }
 
+async function generateKoreanTitle(englishTitle: string, abstract: string): Promise<string> {
+  const result = await callClaude(`다음 생명과학 논문 제목을 한국어로 번역해줘.
+
+규칙:
+- 직역 말고, 블로그 독자가 흥미를 느낄 수 있는 자연스러운 한국어 제목
+- 전문 용어는 한국어로 풀어서 설명
+- 20~40자 이내
+- 제목만 출력 (따옴표, 설명 없이)
+
+영문 제목: ${englishTitle}
+초록 요약: ${abstract.slice(0, 300)}`, 'claude-haiku-4-5-20251001', 100);
+  return result?.trim() ?? englishTitle;
+}
+
 async function generatePostContent(meta: { title: string; abstract: string; journal: string; doi: string; category: string }) {
   if (!process.env.ANTHROPIC_API_KEY) {
     console.warn('ANTHROPIC_API_KEY 없음 — 기본 템플릿 사용');
@@ -113,7 +127,11 @@ async function main() {
   console.log(`✅ 제목: ${meta.title}`);
 
   console.log('🤖 Claude로 포스트 생성 중...');
-  const content = await generatePostContent({ ...meta, doi, category });
+  const [content, koreanTitle] = await Promise.all([
+    generatePostContent({ ...meta, doi, category }),
+    generateKoreanTitle(meta.title, meta.abstract),
+  ]);
+  console.log(`✅ 한국어 제목: ${koreanTitle}`);
 
   const today = new Date().toISOString().slice(0, 10);
   const slug = `${today}-${slugify(meta.title)}`;
@@ -122,7 +140,7 @@ async function main() {
   const body = content ?? `## 왜 중요한가?\n\n${meta.abstract}\n\n## 핵심 발견\n\n(내용을 여기에 작성하세요)\n`;
 
   const mdx = `---
-title: "${meta.title}"
+title: "${koreanTitle}"
 slug: "${slug}"
 date: "${today}"
 category: "${category}"
