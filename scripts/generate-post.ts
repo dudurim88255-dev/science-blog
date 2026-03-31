@@ -63,6 +63,14 @@ async function generateKoreanTitle(englishTitle: string, abstract: string): Prom
   return result?.trim() ?? englishTitle;
 }
 
+async function generateKoreanSummary(abstract: string): Promise<string> {
+  const result = await callClaude(`다음 생명과학 논문 초록을 한국어로 1~2문장으로 요약해줘.
+독자가 바로 이해할 수 있게 쉽게. 요약문만 출력.
+
+${abstract.slice(0, 800)}`, 'claude-haiku-4-5-20251001', 150);
+  return result?.trim().replace(/"/g, "'") ?? '';
+}
+
 async function generatePostContent(meta: { title: string; abstract: string; journal: string; doi: string; category: string }) {
   if (!process.env.ANTHROPIC_API_KEY) {
     console.warn('ANTHROPIC_API_KEY 없음 — 기본 템플릿 사용');
@@ -127,9 +135,10 @@ async function main() {
   console.log(`✅ 제목: ${meta.title}`);
 
   console.log('🤖 Claude로 포스트 생성 중...');
-  const [content, koreanTitle] = await Promise.all([
+  const [content, koreanTitle, koreanSummary] = await Promise.all([
     generatePostContent({ ...meta, doi, category }),
     generateKoreanTitle(meta.title, meta.abstract),
+    generateKoreanSummary(meta.abstract),
   ]);
   console.log(`✅ 한국어 제목: ${koreanTitle}`);
 
@@ -145,7 +154,7 @@ slug: "${slug}"
 date: "${today}"
 category: "${category}"
 tags: []
-summary: "${meta.abstract.slice(0, 200).replace(/"/g, "'")}"
+summary: "${koreanSummary || meta.abstract.slice(0, 200).replace(/"/g, "'")}"
 paperDOI: "${doi}"
 journal: "${meta.journal}"
 difficulty: "입문"
