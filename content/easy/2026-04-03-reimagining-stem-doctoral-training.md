@@ -1,0 +1,3 @@
+## 왜 중요한가?
+
+In an era of heightened global competition in science and technology and geopolitical tensions, United States leadership in science has been diminishing. The 2025 Nature Index found that in elite science journals, China accounted for 56% of the publications in 2024, whereas the US contributed only 10%. This is in stark contrast to 5 years earlier when the US still topped the ranking—but China’s surge was becoming apparent. The rapid change indicates that a remodeling of the US science ecosystem is warranted, including the creation of new paths to earning PhDs in science, technology, engineering, and mathematics (STEM) fields, if the United States is to cultivate a much needed, highly skilled scientific workforce.
