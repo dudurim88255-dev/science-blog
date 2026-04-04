@@ -1,0 +1,5 @@
+## 왜 중요한가?
+
+Protein structure is conserved beyond sequence, making multiple structural alignment (MSTA) essential for analyzing distantly related proteins. Computational prediction methods have vastly extended our repository of available protein structures, requiring fast and accurate MSTA methods. We introduce FoldMason, a progressive MSTA method that leverages the pairwise structural aligners Foldseek and TM-align for the multiple alignment of hundreds of thousands of protein structures, matching or exceeding the alignment quality of state-of-the-art MSTA methods while being two orders of magnitude faster. Using
+                    Flaviviridae
+                    glycoproteins, we demonstrate that FoldMason’s MSTAs support phylogenetic analysis beyond the “twilight zone.” FoldMason computes confidence scores, offers interactive visualizations, and provides essential speed and accuracy for large-scale protein structure analysis in the era of accurate structure prediction. FoldMason is free, open-source software.
