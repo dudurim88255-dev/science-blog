@@ -2,7 +2,7 @@ name: 논문 자동 수집 & 발행
 
 on:
   schedule:
-    - cron: '0 0,6,12,18 * * *'   # 매 6시간 (UTC 0·6·12·18시)
+    - cron: '0 0 * * 1,4'   # 매주 월요일·목요일 09:00 KST (UTC 00:00)
   workflow_dispatch:                 # 수동 실행 버튼
 
 permissions:
