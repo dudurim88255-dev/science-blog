@@ -29,6 +29,7 @@ jobs:
         run: npx tsx scripts/auto-collect.ts
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          NEXT_PUBLIC_SITE_URL: https://science-blog-dun.vercel.app
 
       - name: 변경사항 확인
         id: changes
