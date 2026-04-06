@@ -95,23 +95,26 @@ async function callClaude(prompt: string, maxTokens = 150): Promise<string | nul
   return data.content?.[0]?.text?.trim() ?? null;
 }
 
-async function generateKoreanTitle(englishTitle: string, abstract: string): Promise<string> {
+async function generateKoreanTitle(englishTitle: string, abstract: string): Promise<string | null> {
   const result = await callClaude(
     `생명과학 논문 제목을 한국어로 번역. 블로그 독자가 흥미를 느낄 자연스러운 표현으로. 20~40자. 제목만 출력.\n\n영문: ${englishTitle}\n초록: ${abstract.slice(0, 200)}`,
     80,
   );
-  return result ?? englishTitle;
+  // 한국어가 없으면 실패로 처리
+  if (!result || !/[가-힣]/.test(result)) return null;
+  return result;
 }
 
-async function generateKoreanSummary(abstract: string): Promise<string> {
+async function generateKoreanSummary(abstract: string): Promise<string | null> {
   const result = await callClaude(
     `다음 논문 초록을 한국어로 1~2문장 요약. 쉽게. 요약문만 출력.\n\n${abstract.slice(0, 600)}`,
     150,
   );
-  return result?.replace(/"/g, "'") ?? '';
+  if (!result || !/[가-힣]/.test(result)) return null;
+  return result.replace(/"/g, "'");
 }
 
-async function generatePostBody(englishTitle: string, abstract: string, journal: string): Promise<string> {
+async function generatePostBody(englishTitle: string, abstract: string, journal: string): Promise<string | null> {
   const result = await callClaude(
     `다음 생명과학 논문을 한국어 블로그 포스트로 작성. MDX 본문만 (프론트매터 제외).
 
@@ -135,7 +138,9 @@ async function generatePostBody(englishTitle: string, abstract: string, journal:
 <div className="highlight-box">핵심 한 줄 요약</div>`,
     2000,
   );
-  return result ?? `## 왜 중요한가?\n\n${abstract}\n`;
+  // 한국어가 없으면 실패로 처리 (영문 abstract fallback 금지)
+  if (!result || !/[가-힣]/.test(result)) return null;
+  return result;
 }
 
 async function generateEasyBody(koreanTitle: string, body: string): Promise<string> {
@@ -160,11 +165,13 @@ async function savePost(paper: any, category: string): Promise<string> {
     ?? new Date().toISOString().slice(0, 10);
   const today = new Date().toISOString().slice(0, 10);
 
-  const [koreanTitle, koreanSummary, body] = await Promise.all([
-    generateKoreanTitle(englishTitle, abstract),
-    generateKoreanSummary(abstract),
-    generatePostBody(englishTitle, abstract, journal),
-  ]);
+  // 순차 실행으로 rate limit 방지
+  const koreanTitle = await generateKoreanTitle(englishTitle, abstract);
+  if (!koreanTitle) throw new Error('한국어 제목 생성 실패 — 포스트 저장 건너뜀');
+
+  const koreanSummary = await generateKoreanSummary(abstract);
+  const body = await generatePostBody(englishTitle, abstract, journal);
+  if (!body) throw new Error('한국어 본문 생성 실패 — 포스트 저장 건너뜀');
 
   const slug = `${today}-${slugify(englishTitle)}`;
 
@@ -174,7 +181,7 @@ slug: "${slug}"
 date: "${today}"
 category: "${category}"
 tags: []
-summary: "${koreanSummary}"
+summary: "${koreanSummary ?? ''}"
 paperDOI: "${doi}"
 journal: "${journal}"
 difficulty: "입문"

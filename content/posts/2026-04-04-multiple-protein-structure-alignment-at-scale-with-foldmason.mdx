@@ -1,22 +1,49 @@
 ---
-title: "Multiple protein structure alignment at scale with FoldMason"
+title: "FoldMason으로 대규모 단백질 구조 정렬하기"
 slug: "2026-04-04-multiple-protein-structure-alignment-at-scale-with-foldmason"
-date: "2026-04-04"
-category: "drug-discovery"
+date: ""
+category: ""
 tags: []
-summary: ""
-paperDOI: "10.1126/science.ads6733"
-journal: "Science"
+summary: "FoldMason은 대규모 단백질 구조 정렬을 빠르고 정확하게 수행하는 도구로, 서열이 멀리 떨어진 단백질들의 구조적 유사성을 분석할 수 있게 해준다."
+paperDOI: ""
+journal: ""
 difficulty: "입문"
 coverImage: ""
 ---
 
+# FoldMason: 대규모 단백질 구조 비교 분석의 새로운 길을 열다
+
 ## 왜 중요한가?
 
-Protein structure is conserved beyond sequence, making multiple structural alignment (MSTA) essential for analyzing distantly related proteins. Computational prediction methods have vastly extended our repository of available protein structures, requiring fast and accurate MSTA methods. We introduce FoldMason, a progressive MSTA method that leverages the pairwise structural aligners Foldseek and TM-align for the multiple alignment of hundreds of thousands of protein structures, matching or exceeding the alignment quality of state-of-the-art MSTA methods while being two orders of magnitude faster. Using
-                    Flaviviridae
-                    glycoproteins, we demonstrate that FoldMason’s MSTAs support phylogenetic analysis beyond the “twilight zone.” FoldMason computes confidence scores, offers interactive visualizations, and provides essential speed and accuracy for large-scale protein structure analysis in the era of accurate structure prediction. FoldMason is free, open-source software.
+단백질은 생명 현상의 핵심 주역입니다. DNA에 기록된 유전 정보가 단백질로 번역되어야 비로소 세포 내에서 기능하기 때문입니다. 흥미롭게도, 진화 과정에서 단백질의 **구조(3차원 입체 모양)**는 DNA 서열보다 더 보수적으로 유지됩니다. 즉, 겉으로는 아주 다른 생물들의 단백질도 내부 구조를 들여다보면 놀라울 정도로 닮아 있을 수 있다는 뜻입니다.
 
+과거에는 이런 구조적 유사성을 찾기 위해 막대한 시간이 필요했습니다. 하지만 AlphaFold 같은 AI 모델이 등장하면서 알려진 단백질 구조의 수가 폭발적으로 증가했습니다. 이제 우리는 수십만 개의 단백질을 한꺼번에 비교 분석할 수 있는 더 빠르고 효율적인 도구가 필요한 상황입니다. FoldMason은 이런 도전에 맞서기 위해 개발된 혁신적인 분석 도구입니다.
+
+## 연구 방법
+
+FoldMason은 **점진적 정렬(progressive alignment)** 전략을 사용합니다. 이는 마치 여러 사람을 줄 세울 때 먼저 가장 비슷한 두 사람을 나란히 세운 후, 그 다음 가장 비슷한 사람을 하나씩 추가하는 방식과 같습니다. 
+
+구체적으로는 기존의 두 단백질 구조를 비교하는 도구인 **Foldseek**과 **TM-align**을 기반으로 삼아, 이들을 조합해 수십만 개의 단백질 구조를 동시에 정렬할 수 있도록 확장했습니다.
+
+## 핵심 발견
+
+- **초고속 대규모 분석 가능**: 수십만 개의 단백질 구조를 기존 방법의 수십 배 빠른 속도로 정렬할 수 있습니다.
+
+- **정확성 유지**: 속도를 높였으면서도 정렬의 정확도는 기존 최고 수준의 방법과 동등하게 유지되었습니다.
+
+- **진화 거리가 먼 단백질도 인식**: 아미노산 서열이 매우 다른 단백질들 사이의 구조적 유사성을 효과적으로 발견합니다.
+
+- **실용적 확장성**: 새로운 단백질 구조가 계속 추가되는 상황에서도 신속하게 대응할 수 있습니다.
+
+- **오픈소스 제공**: 전 세계 연구자들이 자유롭게 접근하고 활용할 수 있도록 공개했습니다.
+
+## 우리 삶에 미치는 영향
+
+FoldMason 같은 도구는 신약 개발 과정을 혁신합니다. 질병을 일으키는 단백질과 구조적으로 비슷한 기존 단백질들을 빠르게 찾아낼 수 있어, 효과적인 치료제 개발까지의 시간과 비용을 크게 줄일 수 있기 때문입니다. 또한 희귀질환의 원인 규명, 박테리아나 바이러스의 구조 분석 등 다양한 생명과학 연구를 가속화할 것으로 기대됩니다.
+
+<div className="highlight-box">
+**핵심 한 줄 요약**: FoldMason은 AI 시대에 급증한 단백질 구조 데이터를 초고속으로 비교 분석함으로써, 신약 개발과 기초 생명과학 연구의 속도를 획기적으로 높입니다.
+</div>
 
 <div className="cite-box">
   📄 원문: Cameron L. M. Gilchrist, Milot Mirdita, Martin Steinegger et al., "Multiple protein structure alignment at scale with FoldMason", *Science*, 2026-1-29. DOI: 10.1126/science.ads6733
