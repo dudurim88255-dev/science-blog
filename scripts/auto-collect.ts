@@ -8,7 +8,7 @@
 import fs from 'fs';
 import path from 'path';
 
-const MAX_POSTS_PER_RUN = 2;
+const MAX_POSTS_PER_RUN = 1;
 
 const SEARCH_QUERIES = [
   { query: 'organoid cancer drug resistance', category: 'organoid' },
@@ -28,6 +28,24 @@ const JOURNAL_ISSNS = [
   '1087-0156', // Nature Biotechnology
   '1465-7392', // Nature Cell Biology
 ];
+
+// 저널 중요도 점수 (높을수록 우선)
+const JOURNAL_RANK: Record<string, number> = {
+  'Nature': 100,
+  'Science': 90,
+  'Cell': 80,
+  'Nature Medicine': 70,
+  'Nature Biotechnology': 60,
+  'Nature Cell Biology': 50,
+};
+
+function scorePaper(paper: any): number {
+  const journal = (paper['container-title']?.[0] ?? '') as string;
+  const journalScore = JOURNAL_RANK[journal] ?? 0;
+  const crossrefScore = (paper.score as number) ?? 0;
+  // 저널 중요도 우선, 같은 저널이면 CrossRef 관련성 점수로
+  return journalScore * 1000 + crossrefScore;
+}
 
 // ── 유틸 ──────────────────────────────────────────────────────────────────────
 
@@ -62,7 +80,7 @@ function getExistingDOIs(): Set<string> {
 
 async function searchCrossRef(query: string, issn: string): Promise<any[]> {
   const fromDate = getFromDate(90);
-  const url = `https://api.crossref.org/works?query=${encodeURIComponent(query)}&filter=from-pub-date:${fromDate},type:journal-article,has-abstract:true,issn:${issn}&rows=3&select=DOI,title,abstract,published,author,container-title&sort=score`;
+  const url = `https://api.crossref.org/works?query=${encodeURIComponent(query)}&filter=from-pub-date:${fromDate},type:journal-article,has-abstract:true,issn:${issn}&rows=3&select=DOI,title,abstract,published,author,container-title,score&sort=score`;
   try {
     const res = await fetch(url, { headers: { 'User-Agent': 'science-blog/1.0' } });
     if (!res.ok) return [];
@@ -235,7 +253,14 @@ async function main() {
     return;
   }
 
+  // 저널 중요도 + CrossRef 점수 기준으로 정렬, 가장 좋은 논문 1개 선택
+  candidates.sort((a, b) => scorePaper(b.paper) - scorePaper(a.paper));
+
   console.log(`📄 후보 ${candidates.length}개 → 상위 ${MAX_POSTS_PER_RUN}개 처리\n`);
+  if (candidates[0]) {
+    const top = candidates[0].paper;
+    console.log(`🏆 선택된 논문: "${top.title?.[0]}" (${top['container-title']?.[0]}, 점수: ${scorePaper(top)})\n`);
+  }
 
   const results: string[] = [];
   for (const { paper, category } of candidates.slice(0, MAX_POSTS_PER_RUN)) {
