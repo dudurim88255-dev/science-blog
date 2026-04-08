@@ -8,7 +8,7 @@ interface Props {
 }
 
 export function AdBanner({ slot, format = 'auto', className = '' }: Props) {
-  const adRef = useRef<HTMLInsElement>(null);
+  const adRef = useRef<HTMLModElement>(null);
   const initialized = useRef(false);
 
   useEffect(() => {
