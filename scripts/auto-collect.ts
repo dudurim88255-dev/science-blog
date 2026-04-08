@@ -39,7 +39,7 @@ const JOURNAL_RANK: Record<string, number> = {
   'Nature Cell Biology': 50,
 };
 
-function scorePaper(paper: any): number {
+function scorePaper(paper: CrossRefWork): number {
   const journal = (paper['container-title']?.[0] ?? '') as string;
   const journalScore = JOURNAL_RANK[journal] ?? 0;
   const crossrefScore = (paper.score as number) ?? 0;
@@ -76,19 +76,50 @@ function getExistingDOIs(): Set<string> {
   return dois;
 }
 
+// ── 타입 ──────────────────────────────────────────────────────────────────────
+
+interface CrossRefAuthor {
+  given?: string;
+  family?: string;
+}
+
+interface CrossRefWork {
+  DOI: string;
+  title?: string[];
+  abstract?: string;
+  'container-title'?: string[];
+  author?: CrossRefAuthor[];
+  published?: { 'date-parts'?: number[][] };
+  score?: number;
+}
+
+interface CrossRefResponse {
+  message?: {
+    items?: CrossRefWork[];
+  };
+}
+
 // ── API 호출 ──────────────────────────────────────────────────────────────────
 
-async function searchCrossRef(query: string, issn: string): Promise<any[]> {
+async function searchCrossRef(query: string, issn: string): Promise<CrossRefWork[]> {
   const fromDate = getFromDate(90);
   const url = `https://api.crossref.org/works?query=${encodeURIComponent(query)}&filter=from-pub-date:${fromDate},type:journal-article,has-abstract:true,issn:${issn}&rows=3&select=DOI,title,abstract,published,author,container-title,score&sort=score`;
   try {
     const res = await fetch(url, { headers: { 'User-Agent': 'science-blog/1.0' } });
-    if (!res.ok) return [];
-    const data: any = await res.json();
+    if (!res.ok) {
+      console.warn(`CrossRef API 오류 (${res.status}): query="${query}", issn=${issn}`);
+      return [];
+    }
+    const data = await res.json() as CrossRefResponse;
     return data.message?.items ?? [];
-  } catch {
+  } catch (e) {
+    console.warn(`CrossRef fetch 실패: query="${query}", issn=${issn}`, e);
     return [];
   }
+}
+
+interface ClaudeResponse {
+  content?: Array<{ type: string; text: string }>;
 }
 
 async function callClaude(prompt: string, maxTokens = 150): Promise<string | null> {
@@ -108,8 +139,11 @@ async function callClaude(prompt: string, maxTokens = 150): Promise<string | nul
       messages: [{ role: 'user', content: prompt }],
     }),
   });
-  if (!res.ok) return null;
-  const data: any = await res.json();
+  if (!res.ok) {
+    console.warn(`Claude API 오류 (${res.status})`);
+    return null;
+  }
+  const data = await res.json() as ClaudeResponse;
   return data.content?.[0]?.text?.trim() ?? null;
 }
 
@@ -171,15 +205,15 @@ async function generateEasyBody(koreanTitle: string, body: string): Promise<stri
 
 // ── 포스트 저장 ───────────────────────────────────────────────────────────────
 
-async function savePost(paper: any, category: string): Promise<string> {
-  const doi = paper.DOI as string;
-  const englishTitle = ((paper.title?.[0] ?? '') as string).replace(/\s+/g, ' ').trim();
-  const abstract = ((paper.abstract ?? '') as string).replace(/<[^>]+>/g, '').trim();
-  const journal = (paper['container-title']?.[0] ?? '') as string;
-  const authors = ((paper.author ?? []) as any[])
+async function savePost(paper: CrossRefWork, category: string): Promise<string> {
+  const doi = paper.DOI;
+  const englishTitle = (paper.title?.[0] ?? '').replace(/\s+/g, ' ').trim();
+  const abstract = (paper.abstract ?? '').replace(/<[^>]+>/g, '').trim();
+  const journal = paper['container-title']?.[0] ?? '';
+  const authors = (paper.author ?? [])
     .slice(0, 3)
     .map((a) => `${a.given ?? ''} ${a.family ?? ''}`.trim());
-  const pubDate = (paper.published?.['date-parts']?.[0] as number[] | undefined)?.join('-')
+  const pubDate = paper.published?.['date-parts']?.[0]?.join('-')
     ?? new Date().toISOString().slice(0, 10);
   const today = new Date().toISOString().slice(0, 10);
 
@@ -232,7 +266,7 @@ async function main() {
   const existingDOIs = getExistingDOIs();
   console.log(`📚 기존 포스트 ${existingDOIs.size}개 확인\n`);
 
-  const candidates: { paper: any; category: string }[] = [];
+  const candidates: { paper: CrossRefWork; category: string }[] = [];
 
   for (const { query, category } of SEARCH_QUERIES) {
     for (const issn of JOURNAL_ISSNS.slice(0, 2)) {

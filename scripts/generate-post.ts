@@ -44,8 +44,8 @@ async function callClaude(prompt: string, model = 'claude-sonnet-4-6', maxTokens
     },
     body: JSON.stringify({ model, max_tokens: maxTokens, messages: [{ role: 'user', content: prompt }] }),
   });
-  if (!res.ok) { console.warn('Claude API 오류'); return null; }
-  const data = await res.json();
+  if (!res.ok) { console.warn(`Claude API 오류 (${res.status})`); return null; }
+  const data = await res.json() as { content?: Array<{ type: string; text: string }> };
   return data.content?.[0]?.text ?? null;
 }
 

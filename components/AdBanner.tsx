@@ -8,7 +8,7 @@ interface Props {
 }
 
 export function AdBanner({ slot, format = 'auto', className = '' }: Props) {
-  const adRef = useRef<HTMLModElement>(null);
+  const adRef = useRef<HTMLInsElement>(null);
   const initialized = useRef(false);
 
   useEffect(() => {
@@ -17,7 +17,9 @@ export function AdBanner({ slot, format = 'auto', className = '' }: Props) {
     try {
       // @ts-expect-error adsbygoogle
       (window.adsbygoogle = window.adsbygoogle || []).push({});
-    } catch (_) {}
+    } catch (e) {
+      console.warn('AdSense 초기화 실패:', e);
+    }
   }, []);
 
   if (!process.env.NEXT_PUBLIC_ADSENSE_ID) return null;
