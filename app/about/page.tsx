@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { SITE_NAME, SITE_TAGLINE } from '@/lib/seo';
+import { SITE_NAME, SITE_TAGLINE, buildPersonJsonLd } from '@/lib/seo';
 
 export const metadata: Metadata = {
   title: '소개',
@@ -7,8 +7,10 @@ export const metadata: Metadata = {
 };
 
 export default function AboutPage() {
+  const personJsonLd = buildPersonJsonLd();
   return (
     <div className="max-w-2xl mx-auto px-4 py-16">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(personJsonLd) }} />
       <div className="text-center mb-12">
         <div className="text-5xl mb-4">⏳</div>
         <h1 className="text-2xl font-bold mb-2" style={{ color: '#e8edf5' }}>인간 수명 150세 가능한가?</h1>

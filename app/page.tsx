@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { getAllPosts, CATEGORY_MAP, getAllTags } from '@/lib/posts';
 import { PostCard } from '@/components/PostCard';
 import { AdBanner } from '@/components/AdBanner';
-import { SITE_DESCRIPTION, SITE_TAGLINE, SITE_URL } from '@/lib/seo';
+import { SITE_DESCRIPTION, SITE_TAGLINE, SITE_URL, buildWebSiteJsonLd } from '@/lib/seo';
 
 const CATEGORY_EMOJI: Record<string, string> = {
   organoid: '🫁',
@@ -14,6 +14,7 @@ const CATEGORY_EMOJI: Record<string, string> = {
 };
 
 export default function HomePage() {
+  const websiteJsonLd = buildWebSiteJsonLd();
   const posts = getAllPosts();
   const recent = posts.slice(0, 6);
   const featured = posts[0];
@@ -32,6 +33,7 @@ export default function HomePage() {
 
   return (
     <div className="max-w-6xl mx-auto px-4 py-10">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }} />
 
       {/* ── 히어로 ── */}
       <section className="relative text-center py-20 mb-4 overflow-hidden rounded-3xl"

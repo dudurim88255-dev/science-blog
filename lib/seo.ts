@@ -51,7 +51,7 @@ export function buildArticleJsonLd(post: PostMeta) {
     image,
     author: {
       '@type': 'Person',
-      name: SITE_NAME,
+      name: '흥권',
       url: `${SITE_URL}/about`,
     },
     publisher: {
@@ -63,6 +63,44 @@ export function buildArticleJsonLd(post: PostMeta) {
     dateModified: post.updatedAt ?? post.date,
     mainEntityOfPage: { '@type': 'WebPage', '@id': url },
     keywords: post.tags.join(', '),
+  };
+}
+
+export function buildWebSiteJsonLd() {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    name: SITE_NAME,
+    url: SITE_URL,
+    description: SITE_DESCRIPTION,
+    inLanguage: 'ko-KR',
+    potentialAction: {
+      '@type': 'SearchAction',
+      target: { '@type': 'EntryPoint', urlTemplate: `${SITE_URL}/search?q={search_term_string}` },
+      'query-input': 'required name=search_term_string',
+    },
+    publisher: {
+      '@type': 'Organization',
+      name: SITE_NAME,
+      url: SITE_URL,
+      logo: { '@type': 'ImageObject', url: `${SITE_URL}/logo.png` },
+      sameAs: ['https://github.com/dudurim88255-dev'],
+    },
+  };
+}
+
+export function buildPersonJsonLd() {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'Person',
+    name: '흥권',
+    url: `${SITE_URL}/about`,
+    sameAs: [
+      'https://github.com/dudurim88255-dev',
+      'https://aiscout-henna.vercel.app',
+      'https://ainews-kr.vercel.app',
+    ],
+    knowsAbout: ['생명과학', '역노화', 'CRISPR', '줄기세포', '오가노이드', '신약개발'],
   };
 }
 
