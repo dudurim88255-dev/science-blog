@@ -5,6 +5,7 @@ import './globals.css';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
 import { SITE_NAME, SITE_URL, SITE_DESCRIPTION, SITE_TAGLINE } from '@/lib/seo';
+import { Providers } from './providers';
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -65,12 +66,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }}
         />
-        {/* AdSense 소유권 확인 및 광고 */}
-        <script
-          async
-          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3012911913573742"
-          crossOrigin="anonymous"
-        />
+        {/* AdSense 소유권 확인 */}
+        <meta name="google-adsense-account" content="ca-pub-3012911913573742" />
       </head>
       <Script
         src="https://www.googletagmanager.com/gtag/js?id=G-1024JWBS5C"
@@ -84,10 +81,18 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           gtag('config', 'G-1024JWBS5C');
         `}
       </Script>
+      <Script
+        async
+        src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3012911913573742"
+        crossOrigin="anonymous"
+        strategy="afterInteractive"
+      />
       <body className="min-h-screen flex flex-col">
-        <Header />
-        <main className="flex-1">{children}</main>
-        <Footer />
+        <Providers>
+          <Header />
+          <main className="flex-1">{children}</main>
+          <Footer />
+        </Providers>
         <Analytics />
       </body>
     </html>
